@@ -32,6 +32,5 @@ if __name__ == '__main__':
 	api = reddit()
 	done = submitted(api)
 	for title, link in entries():
-		if wrangle(link) not in done:
+		if title and wrangle(link) not in done:
 			print submit(api, title, link)
-
