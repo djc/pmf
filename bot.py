@@ -1,9 +1,11 @@
 import praw, feedparser
 import urlparse
 import ident
+import sys, os
 
 UA = 'MozillaPlanetFeeder-0.1, by /u/Manuzhai'
 SOURCE = 'http://planet.mozilla.org/atom.xml'
+DEBUG = os.isatty(sys.stdout.fileno())
 
 def reddit():
 	api = praw.Reddit(UA, 'reddit')
@@ -12,14 +14,14 @@ def reddit():
 	return api
 
 def entries():
-	print 'retrieving feed items...'
+	if DEBUG: print 'retrieving feed items...'
 	feed = feedparser.parse(SOURCE)
 	for entry in feed['entries']:
 		yield entry['title'], entry['link']
 
 def submitted(api):
 	mt = api.get_subreddit('MozillaTech')
-	print 'retrieving reddit items...'
+	if DEBUG: print 'retrieving reddit items...'
 	return {item.url for item in mt.get_new(limit=100)}
 
 def wrangle(url):
@@ -36,4 +38,6 @@ if __name__ == '__main__':
 	done = submitted(api)
 	for title, link in entries():
 		if title and wrangle(link) not in done:
-			print submit(api, title, link)
+			res = submit(api, title, link)
+			if res is not None and DEBUG:
+				print res
