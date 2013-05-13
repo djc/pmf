@@ -26,7 +26,10 @@ def wrangle(url):
 	return url.replace('&', '&amp;')
 
 def submit(api, title, link):
-	return api.submit('MozillaTech', title, url=link)
+	try:
+		return api.submit('MozillaTech', title, url=link)
+	except praw.errors.AlreadySubmitted:
+		return None
 
 if __name__ == '__main__':
 	api = reddit()
