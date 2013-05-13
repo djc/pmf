@@ -8,7 +8,7 @@ SOURCE = 'http://planet.mozilla.org/atom.xml'
 DEBUG = os.isatty(sys.stdout.fileno())
 
 def reddit():
-	api = praw.Reddit(UA, 'reddit')
+	api = praw.Reddit(UA, 'reddit', disable_update_check=True)
 	api.set_oauth_app_info(ident.CLIENT, ident.SECRET, 'something')
 	api.refresh_access_information(ident.REFRESH)
 	return api
