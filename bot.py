@@ -1,7 +1,7 @@
 import praw, feedparser
 import urlparse
 import ident
-import sys, os
+import sys, os, urllib2
 
 UA = 'MozillaPlanetFeeder-0.1, by /u/Manuzhai'
 SOURCE = 'http://planet.mozilla.org/atom.xml'
@@ -24,6 +24,11 @@ def submitted(api):
 	if DEBUG: print 'retrieving reddit items...'
 	return {item.url for item in mt.get_new(limit=100)}
 
+def canonicalize(url):
+	if 'feedproxy.google.com' not in url:
+		return url
+	return urllib2.urlopen(url).url
+
 def wrangle(url):
 	return url.replace('&', '&amp;')
 
@@ -37,6 +42,7 @@ if __name__ == '__main__':
 	api = reddit()
 	done = submitted(api)
 	for title, link in entries():
+		link = canonicalize(link)
 		if title and wrangle(link) not in done:
 			res = submit(api, title, link)
 			if res is not None and DEBUG:
