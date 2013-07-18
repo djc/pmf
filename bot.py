@@ -27,7 +27,10 @@ def submitted(api):
 def canonicalize(url):
 	if 'feedproxy.google.com' not in url:
 		return url
-	return urllib2.urlopen(url).url
+	try:
+		return urllib2.urlopen(url).url
+	except urllib2.HTTPError as e:
+		return e.url
 
 def wrangle(url):
 	return url.replace('&', '&amp;')
