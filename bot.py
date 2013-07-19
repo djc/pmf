@@ -4,6 +4,7 @@ import ident
 import sys, os, urllib2
 
 UA = 'MozillaPlanetFeeder-0.1, by /u/Manuzhai'
+HEADERS = {'User-Agent': 'MozillaPlanetFeeder-0.1'}
 SOURCE = 'http://planet.mozilla.org/atom.xml'
 DEBUG = os.isatty(sys.stdout.fileno())
 
@@ -28,7 +29,7 @@ def canonicalize(url):
 	if 'feedproxy.google.com' not in url:
 		return url
 	try:
-		return urllib2.urlopen(url).url
+		return urllib2.urlopen(urllib2.Request(url, headers=HEADERS)).url
 	except urllib2.HTTPError as e:
 		return e.url
 
