@@ -30,6 +30,8 @@ def canonicalize(url):
 		return url
 	try:
 		return urllib2.urlopen(urllib2.Request(url, headers=HEADERS)).url
+	except urllib2.URLError as e:
+		return ''
 	except urllib2.HTTPError as e:
 		return e.url
 
@@ -47,6 +49,7 @@ if __name__ == '__main__':
 	done = submitted(api)
 	for title, link in entries():
 		link = canonicalize(link)
+		if not link: continue
 		if title and wrangle(link) not in done:
 			res = submit(api, title, link)
 			if res is not None and DEBUG:
