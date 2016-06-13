@@ -8,6 +8,7 @@ HEADERS = {'User-Agent': 'MozillaPlanetFeeder-0.1'}
 REDIRECT_URI = 'http://dirkjan.ochtman.nl/reddit/'
 SOURCE = 'http://planet.mozilla.org/atom.xml'
 DEBUG = os.isatty(sys.stdout.fileno())
+REDDITS = ['MozillaTech']
 
 def reddit():
 	api = praw.Reddit(UA, 'reddit', disable_update_check=True)
@@ -23,9 +24,9 @@ def entries():
 	for entry in feed['entries']:
 		yield entry['title'], entry['link']
 
-def submitted(api):
-	mt = api.get_subreddit('MozillaTech')
-	if DEBUG: print 'retrieving reddit items...'
+def submitted(api, r):
+	mt = api.get_subreddit(r)
+	if DEBUG: print 'retrieving reddit items (%s)...' % r
 	return {item.url for item in mt.get_new(limit=100)}
 
 def canonicalize(url):
@@ -41,19 +42,20 @@ def canonicalize(url):
 def wrangle(url):
 	return url.replace('&', '&amp;')
 
-def submit(api, title, link):
+def submit(api, r, title, link):
 	try:
-		return api.submit('MozillaTech', title, url=link)
+		return api.submit(r, title, url=link)
 	except praw.errors.AlreadySubmitted:
 		return None
 
 if __name__ == '__main__':
 	api = reddit()
-	done = submitted(api)
-	for title, link in entries():
-		link = canonicalize(link)
-		if not link: continue
-		if title and wrangle(link) not in done:
-			res = submit(api, title, link)
-			if res is not None and DEBUG:
-				print res
+	links = [(t, canonicalize(l)) for (t, l) in entries()]
+	for r in REDDITS:
+		done = submitted(api, r)
+		for title, link in links:
+			if not link: continue
+			if title and wrangle(link) not in done:
+				res = submit(api, r, title, link)
+				if res is not None and DEBUG:
+					print res
