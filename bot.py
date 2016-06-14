@@ -8,7 +8,7 @@ HEADERS = {'User-Agent': 'MozillaPlanetFeeder-0.1'}
 REDIRECT_URI = 'http://dirkjan.ochtman.nl/reddit/'
 SOURCE = 'http://planet.mozilla.org/atom.xml'
 DEBUG = os.isatty(sys.stdout.fileno())
-REDDITS = ['MozillaTech']
+REDDITS = ['MozillaTech', 'mozilla']
 
 def reddit():
 	api = praw.Reddit(UA, 'reddit', disable_update_check=True)
