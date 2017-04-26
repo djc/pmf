@@ -36,9 +36,6 @@ def canonicalize(url):
 	except urllib.error.HTTPError as e:
 		return e.url
 
-def wrangle(url):
-	return url.replace('&', '&amp;')
-
 def submit(sub, title, link):
 	try:
 		return sub.submit(title, url=link)
@@ -53,7 +50,7 @@ if __name__ == '__main__':
 		done = submitted(sub)
 		for title, link in links:
 			if not link: continue
-			if title and wrangle(link) not in done:
+			if title and link not in done:
 				res = submit(sub, title, link)
 				if res is not None and DEBUG:
 					print(res)
