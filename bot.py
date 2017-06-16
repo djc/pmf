@@ -23,7 +23,7 @@ def entries():
 
 def submitted(sub):
 	if DEBUG: print('retrieving reddit items (%s)...' % r)
-	return {item.url for item in sub.new(limit=100)}
+	return {item.url for item in sub.new(limit=250)}
 
 def canonicalize(url):
 	if 'feedproxy.google.com' not in url:
