@@ -53,4 +53,4 @@ if __name__ == '__main__':
 			if title and link not in done:
 				res = submit(sub, title, link)
 				if res is not None and DEBUG:
-					print(res)
+					print(title, '->', res)
