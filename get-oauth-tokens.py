@@ -4,13 +4,13 @@ CLIENT_STATE = 'MozillaPlanetFeeder'
 SCOPES = set(['read', 'submit'])
 
 def main():
-    api = praw.Reddit(bot.UA, 'reddit')
-    api.set_oauth_app_info(ident.CLIENT, ident.SECRET, bot.REDIRECT_URI)
-    url = api.get_authorize_url(CLIENT_STATE, SCOPES, True)
-    print 'URL:', url
-    code = raw_input('code: ')
-    access_info = api.get_access_information(code)
-    print access_info
+    api = praw.Reddit(client_id=ident.CLIENT, client_secret=ident.SECRET,
+                      user_agent=bot.UA, redirect_uri=bot.REDIRECT_URI)
+    url = api.auth.url(SCOPES, CLIENT_STATE, 'permanent')
+    print('URL:', url)
+    code = input('code: ')
+    print(api.auth.authorize(code))
+    print(api.user.me())
 
 if __name__ == '__main__':
     main()
